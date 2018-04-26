@@ -74,13 +74,25 @@ def compress(fn,qual=70,cfn=True):
     else:
         photo.save(fnP + "\\" + fnS + "." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)        
 
-def find_png_files(folder, subs=False):
-    """Finds all .png files in folder and returns list
+def find_jpg_files(folder, subs=False):
+    """Finds all .jpg, and .jpeg files in folder and returns list
     subs - if True, will include all .png in all sub folders"""
 
+    picList = []
+
+    #Types of images files that are looked for
+    types = ['.jpg','jpeg']
+
+    
+    if subs == False:
+        for file in os.listdir(folder):
+            if os.path.splitext(file)[1].lower() in types:
+                picList.append(file)
+
+    return picList
 
 if __name__ == "__main__":
-    title = 'Image Compress'
+    title = 'Image Compress' #Title for popup boxes
 
     # Show message of welcome
     tell = eg.msgbox("Welcome! Start Compressing Your Images",image="ViceGripPic.png")
@@ -123,7 +135,7 @@ if __name__ == "__main__":
                       msg="Did not complete compression.")
             sys.exit()
 
-        # Go About compressing images
+        # Go About compressing images based on selection
         if selection == 'One File':
             compress(image,cfn=paraRename)
 
@@ -138,6 +150,7 @@ if __name__ == "__main__":
                       msg="Completed compression of %d images." % len(imageLs))
         
         elif selection == "Folder Location":
+            print(find_jpg_files(path))
         
         
 
