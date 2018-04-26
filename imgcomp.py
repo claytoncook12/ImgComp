@@ -83,11 +83,10 @@ def find_jpg_files(folder, subs=False):
     #Types of images files that are looked for
     types = ['.jpg','jpeg']
 
-    
     if subs == False:
         for file in os.listdir(folder):
             if os.path.splitext(file)[1].lower() in types:
-                picList.append(file)
+                picList.append(folder + "\\" + file)
 
     return picList
 
@@ -117,6 +116,10 @@ if __name__ == "__main__":
         elif selection == "Folder Location":
             path = eg.diropenbox(title=title,
                                  msg="Selection folder location where images will be compressed")
+
+            # Add window for chooice of selecting sub folders
+            subs = eg.boolbox(title=title,
+                              msg="Inculde all subfolders for image compression?")
             
         # Show message boxes indicating if files renamed
         paraRename = eg.boolbox(msg="Rename files with new _comp extension?")
@@ -150,7 +153,12 @@ if __name__ == "__main__":
                       msg="Completed compression of %d images." % len(imageLs))
         
         elif selection == "Folder Location":
-            print(find_jpg_files(path))
+
+            if subs == True:
+                print('Make code for compressing images in subfolders')
+
+            else:
+                print(find_jpg_files(path))
         
         
 
