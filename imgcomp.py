@@ -1,7 +1,7 @@
 #! python3
 # imgcomp.py
 
-import os
+import os, sys
 from PIL import Image
 from PIL.ExifTags import TAGS
 from PIL.ExifTags import GPSTAGS
@@ -78,38 +78,42 @@ if __name__ == "__main__":
     title = 'Image Compress'
 
     # Show message of welcome
-    eg.msgbox("Welcome! Start Compressing Your Images",image="ViceGripPic.png")
+    tell = eg.msgbox("Welcome! Start Compressing Your Images",image="ViceGripPic.png")
     
     # Show message to make selection of one image, mutiple images, or folder location
     selection = eg.choicebox(title=title,
                  msg="Please select what you want to compress",
                  choices=['One File','Multiple Files','Folder Location'])
 
-    # Show message box based on previous selection
-    if selection == 'One File':
-        image = eg.fileopenbox(title=title,
-                               msg="Select image you want to compress")
-    elif selection == "Multiple Files":
-        imageLs = eg.fileopenbox(title=title,
-                                 msg="Select images you want to compress",
-                                 multiple=True)
-    elif selection == "Folder Location":
-        path = eg.diropenbox(title=title,
-                             msg="Selection folder location where images will be compressed")
-        
-    # Show message boxes indicating if files renamed
-    paraRename = eg.boolbox(msg="Rename files with new _comp extension?")
+    if selection == None: # Do nothing if nothing selected
+        sys.exit()
     
-    # Ask if selection is correct for renaming files
-    if paraRename:
-        tell = "want to rename files."
     else:
-        tell = "don't want to rename files."
+        # Show message box based on previous selection
+        if selection == 'One File':
+            image = eg.fileopenbox(title=title,
+                                   msg="Select image you want to compress")
+        elif selection == "Multiple Files":
+            imageLs = eg.fileopenbox(title=title,
+                                     msg="Select images you want to compress",
+                                     multiple=True)
+        elif selection == "Folder Location":
+            path = eg.diropenbox(title=title,
+                                 msg="Selection folder location where images will be compressed")
+            
+        # Show message boxes indicating if files renamed
+        paraRename = eg.boolbox(msg="Rename files with new _comp extension?")
         
-    sure = eg.boolbox(title=title,
-                      msg="Confirm that you " + tell)
+        # Ask if selection is correct for renaming files
+        if paraRename:
+            tell = "want to rename files."
+        else:
+            tell = "don't want to rename files."
+            
+        sure = eg.boolbox(title=title,
+                          msg="Confirm that you " + tell)
 
-    # Go About compressing images
+        # Go About compressing images
     
 
         
