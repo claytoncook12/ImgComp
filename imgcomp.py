@@ -74,6 +74,11 @@ def compress(fn,qual=70,cfn=True):
     else:
         photo.save(fnP + "\\" + fnS + "." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)        
 
+def find_png_files(folder, subs=False):
+    """Finds all .png files in folder and returns list
+    subs - if True, will include all .png in all sub folders"""
+
+
 if __name__ == "__main__":
     title = 'Image Compress'
 
@@ -113,9 +118,27 @@ if __name__ == "__main__":
         sure = eg.boolbox(title=title,
                           msg="Confirm that you " + tell)
 
-        # Go About compressing images
-    
+        if sure == False: # If no Confirmation Exit
+            eg.msgbox(title=title,
+                      msg="Did not complete compression.")
+            sys.exit()
 
+        # Go About compressing images
+        if selection == 'One File':
+            compress(image,cfn=paraRename)
+
+            eg.msgbox(title=title,
+                      msg="Completed compression of %s." % image)
+
+        elif selection == "Multiple Files":
+            for pic in imageLs:
+                compress(pic,cfn=paraRename)
+
+            eg.msgbox(title=title,
+                      msg="Completed compression of %d images." % len(imageLs))
+        
+        elif selection == "Folder Location":
+        
         
 
 
