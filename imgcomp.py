@@ -221,6 +221,9 @@ if __name__ == "__main__":
                     for pic in picList:
                         compress(pic,cfn=paraRename)
 
+            eg.msgbox(title=title,
+                      msg="Completed compression of %d images" % len(picList))
+
                 
         
         
