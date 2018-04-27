@@ -53,7 +53,7 @@ def long(dt):
 
     return d + (m/60.0) + (s/3600.0)
 
-def compress(fn,qual=70,cfn=True):
+def compress(fn,qual=70,cfn=True,movDir=None):
     """Compress Image with Pillow module
     cfn - if True will add _comp extension to file name
     qual - sets quality of image upon save
@@ -68,6 +68,10 @@ def compress(fn,qual=70,cfn=True):
     photo = Image.open(fnP + "\\" + fn)
     exifBytes = photo.info['exif']
 
+    # If new location for file was set
+    if movDir !=None:
+        fnP = movDir
+
     # Save photo
     if cfn:
         photo.save(fnP + "\\" + fnS + "_comp." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)
@@ -76,6 +80,7 @@ def compress(fn,qual=70,cfn=True):
 
 def find_jpg_files(folder, subs=False):
     """Finds all .jpg, and .jpeg files in folder and returns list
+    folder - location of folder with pictures in it
     subs - if True, will include all .png in all sub folders"""
 
     picList = []
@@ -128,7 +133,7 @@ if __name__ == "__main__":
         if paraRename:
             tell = "want to rename files."
         else:
-            tell = "don't want to rename files."
+            tell = "don't want to rename files.\n(Original files will be overwritten!)"
             
         sure = eg.boolbox(title=title,
                           msg="Confirm that you " + tell)
@@ -138,27 +143,49 @@ if __name__ == "__main__":
                       msg="Did not complete compression.")
             sys.exit()
 
+        # Ask if user whats to put the picture/s in a new location
+        paraNewLoc = eg.boolbox(msg="Move files to new folder location when compressing?")
+
+        if paraNewLoc:
+            newLoc = eg.diropenbox(title=title,
+                                   msg="Select destination location for compressed picture[s].")
+            if newLoc == None:
+                sys.exit()
+
         # Go About compressing images based on selection
         if selection == 'One File':
-            compress(image,cfn=paraRename)
+            # Picture location based on if new folder location was selected
+            oldLoc,imageName = os.path.split(image)
+            if paraNewLoc:
+                compress(image,cfn=paraRename,movDir=newLoc)
+            else:
+                compress(image,cfn=paraRename)
 
             eg.msgbox(title=title,
-                      msg="Completed compression of %s." % image)
+                      msg="Completed compression of %s." % imageName)
+
 
         elif selection == "Multiple Files":
-            for pic in imageLs:
-                compress(pic,cfn=paraRename)
-
+            # Picture locations based on if new folder location was selected
+            if paraNewLoc:
+                for pic in imageLs:
+                    compress(pic,cfn=paraRename,movDir=newLoc)
+            else:
+                for pic in imageLs:
+                    compress(pic,cfn=paraRename)
+                            
             eg.msgbox(title=title,
                       msg="Completed compression of %d images." % len(imageLs))
         
         elif selection == "Folder Location":
-
+            # Picture location based on if new folder location was selected
             if subs == True:
                 print('Make code for compressing images in subfolders')
 
             else:
-                print(find_jpg_files(path))
+                picList = find_jpg_files(path)
+
+                
         
         
 
