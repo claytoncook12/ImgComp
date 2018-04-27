@@ -2,6 +2,7 @@
 # imgcomp.py
 
 import os, sys
+import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS
 from PIL.ExifTags import GPSTAGS
@@ -74,12 +75,26 @@ def compress(fn,qual=70,cfn=True,movDir=None):
 
     # Save photo
     if cfn:
-        photo.save(fnP + "\\" + fnS + "_comp." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)
+        fn = fnP + "\\" + fnS + "_comp." + fnE
+        photo.save(fn,"JPEG",optimize=True,quality=qual,exif=exifBytes)
     else:
-        photo.save(fnP + "\\" + fnS + "." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)
+        fn = fnP + "\\" + fnS + "." + fnE
+        photo.save(fn,"JPEG",optimize=True,quality=qual,exif=exifBytes)
 
-    # Add line for log of pictures that have been compressed
-    
+    # Log of pictures that have been compressed
+    currentTime = str(datetime.datetime.now())
+    logPath,pyFile = os.path.split(os.path.realpath(__file__))
+
+    # Test if log exists
+    if os.path.exists(logPath+"\\"+"log.txt"):
+        appendWrite = 'a'
+    else:
+        appendWrite = 'w'
+
+    # Wrtie compressed file to log
+    f = open(logPath+"\\"+"log.txt",appendWrite)
+    f.write(currentTime + " " + fn + "\n")
+    f.close()
 
 def find_jpg_files(folder, subs=False):
     """Finds all .jpg, and .jpeg files in folder and returns list
@@ -142,8 +157,7 @@ if __name__ == "__main__":
         if paraRename:
             tell = "want to rename files."
         else:
-            tell = "don't want to rename files.\n(Original files will be overwritten if\n",
-                   "new folder location is not selected in next window!)"
+            tell = "don't want to rename files.\n(Original files will be overwritten if\nnew folder location is not selected in next window!)"
             
         sure = eg.boolbox(title=title,
                           msg="Confirm that you " + tell)
