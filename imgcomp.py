@@ -76,7 +76,10 @@ def compress(fn,qual=70,cfn=True,movDir=None):
     if cfn:
         photo.save(fnP + "\\" + fnS + "_comp." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)
     else:
-        photo.save(fnP + "\\" + fnS + "." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)        
+        photo.save(fnP + "\\" + fnS + "." + fnE,"JPEG",optimize=True,quality=qual,exif=exifBytes)
+
+    # Add line for log of pictures that have been compressed
+    
 
 def find_jpg_files(folder, subs=False):
     """Finds all .jpg, and .jpeg files in folder and returns list
@@ -85,13 +88,19 @@ def find_jpg_files(folder, subs=False):
 
     picList = []
 
-    #Types of images files that are looked for
+    # Types of images files that are selected
     types = ['.jpg','jpeg']
 
     if subs == False:
         for file in os.listdir(folder):
             if os.path.splitext(file)[1].lower() in types:
                 picList.append(folder + "\\" + file)
+
+    else:
+        for folder, sub, files in os.walk(folder):
+            for file in files:
+                if os.path.splitext(file)[1].lower() in types:
+                    picList.append(folder + "\\" + file)
 
     return picList
 
@@ -133,7 +142,8 @@ if __name__ == "__main__":
         if paraRename:
             tell = "want to rename files."
         else:
-            tell = "don't want to rename files.\n(Original files will be overwritten!)"
+            tell = "don't want to rename files.\n(Original files will be overwritten if\n",
+                   "new folder location is not selected in next window!)"
             
         sure = eg.boolbox(title=title,
                           msg="Confirm that you " + tell)
@@ -179,11 +189,23 @@ if __name__ == "__main__":
         
         elif selection == "Folder Location":
             # Picture location based on if new folder location was selected
-            if subs == True:
-                print('Make code for compressing images in subfolders')
+            if subs == True: # If looking in sub folders for images
+                picList = find_jpg_files(path,subs=True)
+                if paraNewLoc: # If moving files to new location
+                    for pic in picList:
+                        compress(pic,cfn=paraRename,movDir=newLoc)
+                else:
+                    for pic in picList:
+                        compress(pic,cfn=paraRename)
 
             else:
                 picList = find_jpg_files(path)
+                if paraNewLoc: # If moving files to new location
+                    for pic in picList:
+                        compress(pic,cfn=paraRename,movDir=newLoc)
+                else:
+                    for pic in picList:
+                        compress(pic,cfn=paraRename)
 
                 
         
