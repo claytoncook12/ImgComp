@@ -23,12 +23,16 @@ def get_exif(fn):
             decoded = TAGS.get(tag, tag)
             ret[decoded] = value
 
-        gpsInfo = ret["GPSInfo"]
-        for tag, value in gpsInfo.items():
-            decoded = GPSTAGS.get(tag,tag)
-            gps[decoded] = value
+        try:
+            gpsInfo = ret["GPSInfo"]
+            for tag, value in gpsInfo.items():
+                decoded = GPSTAGS.get(tag,tag)
+                gps[decoded] = value
 
-        ret["GPSInfo"] = gps
+            ret["GPSInfo"] = gps
+
+        except:
+            ret["GPSInfo"] = None
 
     except:
         ret = None
