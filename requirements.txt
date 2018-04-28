@@ -1,0 +1,5 @@
+DateTime==4.2
+easygui==0.98.1
+Pillow==5.1.0
+pytz==2018.4
+zope.interface==4.5.0
