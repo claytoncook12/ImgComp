@@ -66,8 +66,8 @@ def compress(fn,qual=70,cfn=True,movDir=None):
 
     # file path, file name and file ending
     fnP,fn = os.path.split(fn)
-    fnE = fn.split(".")[-1]
-    fnS = fn.split(".")[0]
+    fnS, fnE = os.path.splitext(fn)
+    fnS = fnS.split("\\")[-1]
 
     exif = get_exif(fnP + "\\" + fn) # Get exif data
     photo = Image.open(fnP + "\\" + fn)
@@ -79,10 +79,10 @@ def compress(fn,qual=70,cfn=True,movDir=None):
 
     # Save photo
     if cfn:
-        fn = fnP + "\\" + fnS + "_comp." + fnE
+        fn = fnP + "\\" + fnS + "_comp" + fnE
         photo.save(fn,"JPEG",optimize=True,quality=qual,exif=exifBytes)
     else:
-        fn = fnP + "\\" + fnS + "." + fnE
+        fn = fnP + "\\" + fnS + fnE
         photo.save(fn,"JPEG",optimize=True,quality=qual,exif=exifBytes)
 
     # Log of pictures that have been compressed
